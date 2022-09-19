@@ -1,24 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {useState,Profile} from "react";
+import "./App.css";
+import {GoogleLogin} from 'react-google-login';
+
 
 function App() {
+//to find out if the user has logged in
+ const [authenticated, setAuthenticated] = useState(false);
+ const [user,setUser] = useState({
+  email: '',
+  name:'',
+  imageUrl: ''
+})
+
+ // print out the answers that will come back to us.
+ const loginSuccess= (res) =>{
+    console.log(res);
+    setUser({
+      email: res?.profileObj.email,
+      name: res?.profileObj.name,
+      imageUrl: res?.profileObj.imageUrl
+    })
+    setAuthenticated(true)
+ }
+ const loginFail = (res) => {
+  console.log(res);
+ }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      {
+        authenticated ?
+        <Profile userData={user} setAuthenticated={setAuthenticated}/>
+        :
+        <GoogleLogin 
+        clientId=""
+        onSuccess={loginSuccess}
+        onFailure={loginFail}
+       />   
+      }
+      </div>
   );
 }
 
